@@ -1,6 +1,7 @@
 package wifismarttracker.smarttracker;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -40,14 +41,21 @@ import java.util.List;
 
 public class NodeList extends Activity {
 
+    FragmentManager fragmentManager;
+    WifiManager wifiManager;
+
+    public NodeList() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node_list);
 
-        WifiManager wifis = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        fragmentManager = getFragmentManager();
 
-        List<ScanResult> scanResults = wifis.getScanResults();
+        wifiManager.getScanResults();
     }
 
 
