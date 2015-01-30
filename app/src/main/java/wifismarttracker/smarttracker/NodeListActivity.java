@@ -37,25 +37,27 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
-public class NodeList extends Activity {
+public class NodeListActivity extends Activity {
 
     FragmentManager fragmentManager;
     WifiManager wifiManager;
+    NodeStore nodeStore;
 
-    public NodeList() {
+    public NodeListActivity() {
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_node_list);
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         fragmentManager = getFragmentManager();
-
-        wifiManager.getScanResults();
+        nodeStore = new NodeStore();
     }
 
 
@@ -79,5 +81,14 @@ public class NodeList extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private ArrayList<NodeFragment> setupNodeFragments()
+    {
+        ArrayList<Node> nodes = nodeStore.getAllNodes();
+
+        // iterate over nodes, build and add them to the UI
+
+        return null;
     }
 }
