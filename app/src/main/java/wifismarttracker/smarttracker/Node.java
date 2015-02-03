@@ -5,19 +5,19 @@ package wifismarttracker.smarttracker;
  */
 public class Node {
 
-    private String securityKey;
+    private String _securityKey;
 
-    private String name;
+    private String _name;
 
     public Node(String securityKey, String name)
     {
-        securityKey = securityKey;
-        name = name;
+        _securityKey = securityKey;
+        _name = name;
     }
 
     public String name()
     {
-        return name;
+        return _name;
     }
 
     public void setName(String name)

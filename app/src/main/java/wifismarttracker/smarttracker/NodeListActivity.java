@@ -2,6 +2,7 @@ package wifismarttracker.smarttracker;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -38,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class NodeListActivity extends Activity {
@@ -58,6 +60,8 @@ public class NodeListActivity extends Activity {
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         fragmentManager = getFragmentManager();
         nodeStore = new NodeStore();
+
+        setupNodeFragments();
     }
 
 
@@ -83,12 +87,25 @@ public class NodeListActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private ArrayList<NodeFragment> setupNodeFragments()
-    {
+    private void setupNodeFragments() {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
         ArrayList<Node> nodes = nodeStore.getAllNodes();
 
-        // iterate over nodes, build and add them to the UI
+        Iterator<Node> iterator = nodes.iterator();
 
-        return null;
+        while (iterator.hasNext()) {
+            Node node = iterator.next();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("name", node.name());
+
+            NodeFragment fragment = new NodeFragment();
+            fragment.setArguments(bundle);
+
+            fragmentTransaction.add(R.id.nodeListLayout, fragment);
+        }
+
+        fragmentTransaction.commit();
     }
 }
