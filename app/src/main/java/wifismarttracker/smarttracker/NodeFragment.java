@@ -22,8 +22,10 @@ public class NodeFragment extends Fragment{
         View view = inflater.inflate(R.layout.node_fragment, container, false);
 
         TextView name = (TextView) view.findViewById(R.id.nodeName);
+        TextView distance = (TextView) view.findViewById(R.id.nodeDistance);
 
         name.setText(this.getArguments().getString("name"));
+        distance.setText(String.valueOf(this.getArguments().getFloat("distance")));
 
         return view;
     }

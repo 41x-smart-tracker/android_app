@@ -22,6 +22,9 @@ public class Node {
 
     public void setName(String name)
     {
+    }
 
+    public Node clone() {
+        return new Node(_securityKey, _name);
     }
 }

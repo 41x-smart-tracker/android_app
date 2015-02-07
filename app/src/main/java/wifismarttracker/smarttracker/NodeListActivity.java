@@ -44,12 +44,10 @@ import java.util.List;
 
 public class NodeListActivity extends Activity {
 
-    FragmentManager fragmentManager;
-    WifiManager wifiManager;
-    NodeStore nodeStore;
-
-    public NodeListActivity() {
-    }
+    private FragmentManager fragmentManager;
+    private WifiManager wifiManager;
+    private NodeStore nodeStore;
+    private DistanceCalcuator _distanceCalculator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +59,9 @@ public class NodeListActivity extends Activity {
         fragmentManager = getFragmentManager();
         nodeStore = new NodeStore();
 
-        setupNodeFragments();
+        _distanceCalculator = new DistanceCalcuator(wifiManager, nodeStore.getAllNodes());
+
+        refreshDistances();
     }
 
 
@@ -87,22 +87,24 @@ public class NodeListActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupNodeFragments() {
+    private void refreshDistances() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        ArrayList<Node> nodes = nodeStore.getAllNodes();
+        ArrayList<DistanceResult> results = _distanceCalculator.distanceResults();
 
-        Iterator<Node> iterator = nodes.iterator();
+        Iterator<DistanceResult> iterator = results.iterator();
 
         while (iterator.hasNext()) {
-            Node node = iterator.next();
+            DistanceResult result = iterator.next();
 
             Bundle bundle = new Bundle();
-            bundle.putString("name", node.name());
+            bundle.putString("name", result.name());
+            bundle.putFloat("distance", result.distance());
 
             NodeFragment fragment = new NodeFragment();
             fragment.setArguments(bundle);
 
+            fragmentTransaction.remove(fragment);
             fragmentTransaction.add(R.id.nodeListLayout, fragment);
         }
 

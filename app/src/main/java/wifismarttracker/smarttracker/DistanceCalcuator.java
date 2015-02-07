@@ -3,6 +3,8 @@ package wifismarttracker.smarttracker;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -10,27 +12,42 @@ import java.util.List;
  */
 public class DistanceCalcuator {
 
-    private WifiManager wifiManager;
+    private WifiManager _wifiManager;
+    private ArrayList<Node> _nodes;
 
-    private boolean scanning = false;
+    public DistanceCalcuator(WifiManager wifi, ArrayList<Node> nodes) {
+        _wifiManager = wifi;
 
-    public DistanceCalcuator(WifiManager wifi)
-    {
-        wifiManager = wifi;
+        _nodes = new ArrayList<Node>();
+
+        Iterator<Node> iterator = nodes.iterator();
+
+        while(iterator.hasNext()) {
+            _nodes.add(iterator.next().clone());
+        }
     }
 
-    public void startScanning()
-    {
+    public ArrayList<DistanceResult> distanceResults() {
+        ArrayList<DistanceResult> results = new ArrayList<DistanceResult>();
+
+        Iterator<Node> iterator = _nodes.iterator();
+
+        while(iterator.hasNext()) {
+            results.add(new DistanceResult(iterator.next().name(), 20));
+        }
+
+        return results;
+    }
+
+    public void startScanning() {
 
     }
 
-    public void stopScanning()
-    {
+    public void stopScanning() {
 
     }
 
-    public void pingNode(Node node)
-    {
+    public void pingNode(Node node) {
 
     }
 
@@ -44,13 +61,11 @@ public class DistanceCalcuator {
         return 1;
     }
 
-    private void scan()
-    {
-        wifiManager.startScan();
+    private void scan() {
+        _wifiManager.startScan();
     }
 
-    private void scanData()
-    {
-        wifiManager.getScanResults();
+    private void scanData() {
+        _wifiManager.getScanResults();
     }
 }
