@@ -41,6 +41,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class NodeListActivity extends Activity {
 
@@ -48,6 +50,11 @@ public class NodeListActivity extends Activity {
     private WifiManager wifiManager;
     private NodeStore nodeStore;
     private DistanceCalcuator _distanceCalculator;
+
+    private Timer timer;
+    private TimerTask timerTask;
+
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,7 @@ public class NodeListActivity extends Activity {
 
         _distanceCalculator = new DistanceCalcuator(wifiManager, nodeStore.getAllNodes());
 
-        refreshDistances();
+        startTimer();
     }
 
 
@@ -87,6 +94,26 @@ public class NodeListActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void startTimer() {
+        timer = new Timer();
+        initializeTimerTask();
+        timer.schedule(timerTask, 1000, 1000);
+    }
+
+    private void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshDistances();
+                    }
+                });
+            }
+        };
+    }
+
     private void refreshDistances() {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
@@ -104,7 +131,6 @@ public class NodeListActivity extends Activity {
             NodeFragment fragment = new NodeFragment();
             fragment.setArguments(bundle);
 
-            fragmentTransaction.remove(fragment);
             fragmentTransaction.add(R.id.nodeListLayout, fragment);
         }
 
