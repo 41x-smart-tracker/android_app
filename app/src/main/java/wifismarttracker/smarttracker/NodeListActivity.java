@@ -1,6 +1,7 @@
 package wifismarttracker.smarttracker;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -26,11 +27,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.net.wifi.*;
+import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +56,8 @@ public class NodeListActivity extends Activity {
 
     private Timer timer;
     private TimerTask timerTask;
+
+    private ArrayList<NodeFragment> fragments;
 
     private final Handler handler = new Handler();
 
@@ -115,6 +120,8 @@ public class NodeListActivity extends Activity {
     }
 
     private void refreshDistances() {
+        int i = 0;
+
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         ArrayList<DistanceResult> results = _distanceCalculator.distanceResults();
@@ -131,7 +138,14 @@ public class NodeListActivity extends Activity {
             NodeFragment fragment = new NodeFragment();
             fragment.setArguments(bundle);
 
-            fragmentTransaction.add(R.id.nodeListLayout, fragment);
+            Fragment fragment1 = getFragmentManager().findFragmentByTag(result.name());
+
+            if (fragment1 != null) {
+                fragmentTransaction.remove(getFragmentManager().findFragmentByTag(result.name()));
+            }
+            fragmentTransaction.add(R.id.nodeListLayout, fragment, result.name());
+
+            i++;
         }
 
         fragmentTransaction.commit();
