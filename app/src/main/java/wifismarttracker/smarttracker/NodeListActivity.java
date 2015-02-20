@@ -71,6 +71,8 @@ public class NodeListActivity extends Activity {
         fragmentManager = getFragmentManager();
         nodeStore = new NodeStore();
 
+        wifiManager.startScan();
+
         _distanceCalculator = new DistanceCalcuator(wifiManager, nodeStore.getAllNodes());
 
         startTimer();

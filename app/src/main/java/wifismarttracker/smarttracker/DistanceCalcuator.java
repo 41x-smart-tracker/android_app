@@ -33,7 +33,8 @@ public class DistanceCalcuator {
         Iterator<Node> iterator = _nodes.iterator();
 
         while(iterator.hasNext()) {
-            results.add(new DistanceResult(iterator.next().name(), 20));
+            Node next = iterator.next();
+            results.add(new DistanceResult(next.name(), distanceTo(next)));
         }
 
         return results;
@@ -51,9 +52,14 @@ public class DistanceCalcuator {
 
     }
 
-    public double distanceTo(Node node)
+    public float distanceTo(Node node)
     {
-        return 0.0;
+        if (_wifiManager.getScanResults().size() == 0)
+            return (float) 0.0;
+
+        ScanResult first = (ScanResult) _wifiManager.getScanResults().toArray()[0];
+
+        return (float) (first.level * 1.0);
     }
 
     public int direction(Node node)
