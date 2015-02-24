@@ -9,6 +9,8 @@ public class Node {
 
     private String _name;
 
+    private String _ssid;
+
     public Node(String securityKey, String name)
     {
         _securityKey = securityKey;
@@ -18,6 +20,10 @@ public class Node {
     public String name()
     {
         return _name;
+    }
+
+    public String ssid() {
+        return _ssid;
     }
 
     public void setName(String name)

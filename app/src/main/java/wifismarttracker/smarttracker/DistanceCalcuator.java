@@ -57,9 +57,9 @@ public class DistanceCalcuator {
         if (_wifiManager.getScanResults().size() == 0)
             return (float) 0.0;
 
-        ScanResult first = (ScanResult) _wifiManager.getScanResults().toArray()[0];
+        ScanResult result = findNodeInScanResults(node);
 
-        return (float) (first.level * 1.0);
+        return (float) (result.level * 1.0);
     }
 
     public int direction(Node node)
@@ -73,5 +73,18 @@ public class DistanceCalcuator {
 
     private void scanData() {
         _wifiManager.getScanResults();
+    }
+
+    private ScanResult findNodeInScanResults(Node toFind) {
+        Iterator<ScanResult> iterator = _wifiManager.getScanResults().iterator();
+
+        while(iterator.hasNext()) {
+            ScanResult result = iterator.next();
+
+            if (result.SSID == toFind.ssid())
+                return result;
+        }
+
+        return null;
     }
 }
