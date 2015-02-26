@@ -59,6 +59,9 @@ public class DistanceCalcuator {
 
         ScanResult result = findNodeInScanResults(node);
 
+        if (result == null)
+            return (float) 0.0;
+
         return (float) (result.level * 1.0);
     }
 
