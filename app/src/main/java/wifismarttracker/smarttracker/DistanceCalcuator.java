@@ -54,15 +54,56 @@ public class DistanceCalcuator {
 
     public float distanceTo(Node node)
     {
+         //free space formala
+        if (_wifiManager.getScanResults().size() == 0)
+            return (float) 0.0;
+
+
+        ScanResult result = findNodeInScanResults(node);
+
+        /*http://en.wikipedia.org/wiki/Free-space_path_loss*/
+
+        if (result == null)
+            return (float) 0.0;
+
+        double distance = (27.55 - (20 * Math.log10(result.frequency)) + Math.abs(result.level)) / 20.0;
+
+        return (float) Math.pow(10.0, distance);
+    }
+    public float distanceToMethodTwo(Node node)
+    {
+        //RSSI formula need calbiration
+        if (_wifiManager.getScanResults().size() == 0)
+            return (float) 0.0;
+
+        ScanResult result = findNodeInScanResults(node);
+         /*http://www.ijitee.org/attachments/File/v2i2/A0359112112.pdf*/
+
+        // RSSI (dBm) = -10n log10(d) + A
+        //n is the propagation constant or path-loss exponent
+        //A is the received signal strength in dBm at 1 metre
+        //RSSI is level
+        double A = 46.6777;
+        double N = 46.6777;
+        double num = result.level/(-10 * N) - A;
+        double distance = Math.pow(10,num);
+
+        return (float) distance;
+    }
+    public float distanceToMethodThree(Node node)
+    {
+        //inverse square method need calbiration
         if (_wifiManager.getScanResults().size() == 0)
             return (float) 0.0;
 
         ScanResult result = findNodeInScanResults(node);
 
-        if (result == null)
-            return (float) 0.0;
+        double IntensityOne = 46.6777;
+        double refDistance = 1;
 
-        return (float) (result.level * 1.0);
+        double distance = Math.sqrt(IntensityOne*Math.pow(2,refDistance)/ result.level);
+
+        return (float) distance;
     }
 
     public int direction(Node node)
