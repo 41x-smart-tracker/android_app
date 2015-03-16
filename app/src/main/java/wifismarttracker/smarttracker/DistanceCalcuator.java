@@ -2,6 +2,7 @@ package wifismarttracker.smarttracker;
 
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,6 +55,9 @@ public class DistanceCalcuator {
 
     public float distanceTo(Node node)
     {
+        if (_wifiManager.getScanResults() == null)
+            return (float) 0.0;
+
          //free space formala
         if (_wifiManager.getScanResults().size() == 0)
             return (float) 0.0;
@@ -98,7 +102,7 @@ public class DistanceCalcuator {
 
         ScanResult result = findNodeInScanResults(node);
 
-        double IntensityOne = 46.6777;
+        double IntensityOne = 46.6777; // dBm at 1 metre distance
         double refDistance = 1;
 
         double distance = Math.sqrt(IntensityOne*Math.pow(2,refDistance)/ result.level);
@@ -111,7 +115,7 @@ public class DistanceCalcuator {
         return 1;
     }
 
-    private void scan() {
+    public void scan() {
         _wifiManager.startScan();
     }
 
@@ -120,12 +124,14 @@ public class DistanceCalcuator {
     }
 
     private ScanResult findNodeInScanResults(Node toFind) {
-        Iterator<ScanResult> iterator = _wifiManager.getScanResults().iterator();
+        List<ScanResult> results = _wifiManager.getScanResults();
+
+        Iterator<ScanResult> iterator = results.iterator();
 
         while(iterator.hasNext()) {
             ScanResult result = iterator.next();
 
-            if (result.SSID == toFind.ssid())
+            if (result.SSID.equals(toFind.ssid()))
                 return result;
         }
 

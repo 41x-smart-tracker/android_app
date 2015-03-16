@@ -37,10 +37,8 @@ public class NodeStore {
 
         ArrayList<Node> seeds = new ArrayList<Node>();
 
-        seeds.add(new Node("1234", "Jimmy"));
-        seeds.add(new Node("2468", "Timmy"));
-        seeds.add(new Node("3457", "Lucy"));
-        seeds.add(new Node("7890", "Sally"));
+        seeds.add(new Node("1234", "guest", "Cisco01048"));
+        seeds.add(new Node("2468", "roam", "eduroam"));
 
         return seeds;
     }
@@ -52,6 +50,6 @@ public class NodeStore {
 
     private Node parseLine(String line)
     {
-        return new Node("asdf", "Jimmy");
+        return null;
     }
 }
