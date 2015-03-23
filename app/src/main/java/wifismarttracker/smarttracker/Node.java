@@ -1,8 +1,12 @@
 package wifismarttracker.smarttracker;
 
+import android.hardware.Sensor;
+import android.net.wifi.WifiManager;
+
 /**
  * Created by graydensmith on 15-01-30.
  */
+
 public class Node {
 
     private String _securityKey;
@@ -11,11 +15,15 @@ public class Node {
 
     private String _ssid;
 
-    public Node(String securityKey, String name, String ssid)
+    private DistanceCalculator _calculator;
+
+    public Node(String securityKey, String name, String ssid, WifiManager wifiManager, Sensor accelerometer)
     {
         _securityKey = securityKey;
         _name = name;
         _ssid = ssid;
+
+        _calculator = new DistanceCalculator(wifiManager, accelerometer, this);
     }
 
     public String name()
@@ -27,11 +35,15 @@ public class Node {
         return _ssid;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
+        _name = name;
     }
 
-    public Node clone() {
-        return new Node(_securityKey, _name, _ssid);
+    public double distance() {
+        return _calculator.distanceTo();
+    }
+
+    public int direction() {
+        return 1;
     }
 }

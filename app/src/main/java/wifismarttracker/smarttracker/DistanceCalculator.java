@@ -1,60 +1,33 @@
 package wifismarttracker.smarttracker;
 
+import android.hardware.Sensor;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by graydensmith on 15-01-30.
  */
-public class DistanceCalcuator {
+public class DistanceCalculator {
 
     private WifiManager _wifiManager;
-    private ArrayList<Node> _nodes;
+    private Sensor _accelerometer;
+    private Node _node;
+    private SignalHistory _signalHistory;
 
-    public DistanceCalcuator(WifiManager wifi, ArrayList<Node> nodes) {
-        _wifiManager = wifi;
+    public DistanceCalculator(WifiManager wifiManager, Sensor accelerometer, Node node) {
+        _wifiManager = wifiManager;
+        _accelerometer = accelerometer;
 
-        _nodes = new ArrayList<Node>();
-
-        Iterator<Node> iterator = nodes.iterator();
-
-        while(iterator.hasNext()) {
-            _nodes.add(iterator.next().clone());
-        }
+        _signalHistory = new SignalHistory();
     }
 
-    public ArrayList<DistanceResult> distanceResults() {
-        ArrayList<DistanceResult> results = new ArrayList<DistanceResult>();
-
-        Iterator<Node> iterator = _nodes.iterator();
-
-        while(iterator.hasNext()) {
-            Node next = iterator.next();
-            results.add(new DistanceResult(next.name(), distanceTo(next)));
-        }
-
-        return results;
-    }
-
-    public void startScanning() {
-
-    }
-
-    public void stopScanning() {
-
-    }
-
-    public void pingNode(Node node) {
-
-    }
-
-    public float distanceTo(Node node)
+    public float distanceTo()
     {
+        scan();
+
         if (_wifiManager.getScanResults() == null)
             return (float) 0.0;
 
@@ -62,21 +35,22 @@ public class DistanceCalcuator {
         if (_wifiManager.getScanResults().size() == 0)
             return (float) 0.0;
 
+        ScanResult result = findNodeInScanResults(_node);
 
-        ScanResult result = findNodeInScanResults(node);
+        _signalHistory.addSignal(result.level);
 
         /*http://en.wikipedia.org/wiki/Free-space_path_loss*/
 
         if (result == null)
             return (float) 0.0;
 
-        double distance = (27.55 - (20 * Math.log10(result.frequency)) + Math.abs(result.level)) / 20.0;
+        double distance = (27.55 - (20 * Math.log10(result.frequency)) + Math.abs(_signalHistory.runningAverage())) / 20.0;
 
         return (float) Math.pow(10.0, distance);
     }
     public float distanceToMethodTwo(Node node)
     {
-        // Results are device specific and therefore not general accessible
+        // Results are device specific and therefore not generally accessible
 
         //RSSI formula need calbiration
         if (_wifiManager.getScanResults().size() == 0)
@@ -127,10 +101,6 @@ public class DistanceCalcuator {
 
     public void scan() {
         _wifiManager.startScan();
-    }
-
-    private void scanData() {
-        _wifiManager.getScanResults();
     }
 
     private ScanResult findNodeInScanResults(Node toFind) {

@@ -1,49 +1,21 @@
 package wifismarttracker.smarttracker;
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentSender;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.database.DatabaseErrorHandler;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.net.wifi.*;
-import android.widget.LinearLayout;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,7 +24,8 @@ public class NodeListActivity extends FragmentActivity {
     private FragmentManager fragmentManager;
     private WifiManager wifiManager;
     private NodeStore nodeStore;
-    private DistanceCalcuator _distanceCalculator;
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -69,11 +42,11 @@ public class NodeListActivity extends FragmentActivity {
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         fragmentManager = getSupportFragmentManager();
-        nodeStore = new NodeStore();
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        nodeStore = new NodeStore(wifiManager, accelerometer);
 
         wifiManager.startScan();
-
-        _distanceCalculator = new DistanceCalcuator(wifiManager, nodeStore.getAllNodes());
 
         startTimer();
     }
@@ -124,33 +97,35 @@ public class NodeListActivity extends FragmentActivity {
     private void refreshDistances() {
         int i = 0;
 
-        _distanceCalculator.scan();
-
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        ArrayList<DistanceResult> results = _distanceCalculator.distanceResults();
 
-        Iterator<DistanceResult> iterator = results.iterator();
+        Iterator<Node> iterator = nodeStore.getAllNodes().iterator();
 
         while (iterator.hasNext()) {
-            DistanceResult result = iterator.next();
+            Node node = iterator.next();
 
             Bundle bundle = new Bundle();
-            bundle.putString("name", result.name());
-            bundle.putFloat("distance", result.distance());
+            bundle.putString("name", node.name());
+            bundle.putFloat("distance", (float) node.distance());
+            bundle.putInt("direction", node.direction());
 
             NodeFragment fragment = new NodeFragment();
             fragment.setArguments(bundle);
 
-            Fragment fragment1 = getSupportFragmentManager().findFragmentByTag(result.name());
+            Fragment fragment1 = getSupportFragmentManager().findFragmentByTag(node.name());
 
             if (fragment1 != null) {
-                fragmentTransaction.remove(getSupportFragmentManager().findFragmentByTag(result.name()));
+                fragmentTransaction.remove(getSupportFragmentManager().findFragmentByTag(node.name()));
             }
-            fragmentTransaction.add(R.id.nodeListLayout, fragment, result.name());
+            fragmentTransaction.add(R.id.nodeListLayout, fragment, node.name());
 
             i++;
         }
 
         fragmentTransaction.commit();
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
     }
 }
