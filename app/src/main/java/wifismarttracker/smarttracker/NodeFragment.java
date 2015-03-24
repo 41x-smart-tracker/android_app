@@ -1,7 +1,12 @@
 package wifismarttracker.smarttracker;
 
+<<<<<<< HEAD
 import android.app.Fragment;
 import android.os.Bundle;
+=======
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+>>>>>>> origin/master
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +20,11 @@ import java.util.Date;
 /**
  * Created by graydensmith on 15-01-30.
  */
+<<<<<<< HEAD
 public class NodeFragment extends Fragment{
+=======
+public class NodeFragment extends Fragment {
+>>>>>>> origin/master
 
     protected void onCreate() {
 

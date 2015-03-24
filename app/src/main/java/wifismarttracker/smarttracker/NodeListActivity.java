@@ -2,14 +2,11 @@ package wifismarttracker.smarttracker;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
@@ -28,7 +25,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -58,7 +58,7 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-public class NodeListActivity extends Activity implements OnClickListener{
+public class NodeListActivity extends FragmentActivity implements OnClickListener {
 
     private FragmentManager fragmentManager;
     private WifiManager wifiManager;
@@ -82,7 +82,7 @@ public class NodeListActivity extends Activity implements OnClickListener{
         setContentView(R.layout.activity_node_list);
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         nodeStore = new NodeStore();
 
         wifiManager.startScan();
@@ -136,6 +136,7 @@ public class NodeListActivity extends Activity implements OnClickListener{
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void startTimer() {
@@ -161,8 +162,9 @@ public class NodeListActivity extends Activity implements OnClickListener{
     private void refreshDistances() {
         int i = 0;
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        _distanceCalculator.scan();
 
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ArrayList<DistanceResult> results = _distanceCalculator.distanceResults();
 
         Iterator<DistanceResult> iterator = results.iterator();
@@ -177,10 +179,10 @@ public class NodeListActivity extends Activity implements OnClickListener{
             NodeFragment fragment = new NodeFragment();
             fragment.setArguments(bundle);
 
-            Fragment fragment1 = getFragmentManager().findFragmentByTag(result.name());
+            Fragment fragment1 = getSupportFragmentManager().findFragmentByTag(result.name());
 
             if (fragment1 != null) {
-                fragmentTransaction.remove(getFragmentManager().findFragmentByTag(result.name()));
+                fragmentTransaction.remove(getSupportFragmentManager().findFragmentByTag(result.name()));
             }
             fragmentTransaction.add(R.id.nodeListLayout, fragment, result.name());
 

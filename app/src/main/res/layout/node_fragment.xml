@@ -16,5 +16,3 @@
         android:id="@+id/nodeDistance"
         />
 </LinearLayout>
-
-

@@ -11,10 +11,11 @@ public class Node {
 
     private String _ssid;
 
-    public Node(String securityKey, String name)
+    public Node(String securityKey, String name, String ssid)
     {
         _securityKey = securityKey;
         _name = name;
+        _ssid = ssid;
     }
 
     public String name()
@@ -31,6 +32,6 @@ public class Node {
     }
 
     public Node clone() {
-        return new Node(_securityKey, _name);
+        return new Node(_securityKey, _name, _ssid);
     }
 }
