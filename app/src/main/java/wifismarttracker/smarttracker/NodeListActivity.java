@@ -60,6 +60,8 @@ public class NodeListActivity extends FragmentActivity implements OnClickListene
 
         wifiManager.startScan();
 
+        timer = new Timer();
+
         //instantiates the Button and TextView variables relative to the ID in the layout
         /*
         scanBtn = (Button)findViewById(R.id.scan_button);
@@ -110,7 +112,6 @@ public class NodeListActivity extends FragmentActivity implements OnClickListene
     }
 
     private void startTimer() {
-        timer = new Timer();
         initializeTimerTask();
         timer.schedule(timerTask, 1000, 1000);
     }
@@ -161,7 +162,7 @@ public class NodeListActivity extends FragmentActivity implements OnClickListene
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
+        timer.cancel();
     }
 
 
