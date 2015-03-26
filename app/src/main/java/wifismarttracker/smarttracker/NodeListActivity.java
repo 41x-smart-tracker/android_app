@@ -107,7 +107,6 @@ public class NodeListActivity extends FragmentActivity implements OnClickListene
             default:
                 return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void startTimer() {
