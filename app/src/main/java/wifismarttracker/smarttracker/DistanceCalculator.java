@@ -120,19 +120,13 @@ public class DistanceCalculator implements SensorEventListener {
     }
 
     public int angle() {
-        if (moving()) {
-            return 1;
-        } else {
+        if (moving() && gettingCloser()) {
             return 0;
-        }
-        /*if (steppingForward() && gettingCloser()) {
-            return 0;
-        } else if (!steppingForward() && !gettingCloser()) {
-            return 0;
-        } else {
+        } else if (moving() && gettingFarther()) {
             return 180;
+        } else {
+            return 0;
         }
-        */
     }
 
     public void scan() {
