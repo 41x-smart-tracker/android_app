@@ -48,6 +48,6 @@ public class Node {
     }
 
     public int angle() {
-        return 180;
+        return _calculator.angle();
     }
 }

@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,7 +25,17 @@ public class DistanceCalculator implements SensorEventListener {
     private float _y;
     private float _z;
 
+    private float _x1;
+    private float _y1;
+    private float _z1;
+
     private int _lastAngle;
+
+    private long _lastUpdate = 0;
+
+    private float _speed;
+
+    private static final int SHAKE_THRESHOLD = 50;
 
     public DistanceCalculator(WifiManager wifiManager, SensorManager sensorManager, Node node) {
         _wifiManager = wifiManager;
@@ -34,6 +45,8 @@ public class DistanceCalculator implements SensorEventListener {
         _node = node;
 
         _lastAngle = 0;
+
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     public float distanceTo()
@@ -106,27 +119,20 @@ public class DistanceCalculator implements SensorEventListener {
         return (float) distance;
     }
 
-    public int angle()
-    {
-        // getting closer
-        if (_signalHistory.diff() > 0) {
-            if (_y > 0) {
-                return 0;
-            } else {
-                return 180;
-            }
-
-            if (_x > 0) {
-                return 90;
-            } else {
-                return 270;
-            }
-        // getting farther
-        } else if (_signalHistory.diff() < 0) {
-
+    public int angle() {
+        if (moving()) {
+            return 1;
+        } else {
+            return 0;
         }
-
-        return 0;
+        /*if (steppingForward() && gettingCloser()) {
+            return 0;
+        } else if (!steppingForward() && !gettingCloser()) {
+            return 0;
+        } else {
+            return 180;
+        }
+        */
     }
 
     public void scan() {
@@ -148,11 +154,38 @@ public class DistanceCalculator implements SensorEventListener {
         return null;
     }
 
+    private boolean moving() {
+        return Math.abs(_speed) > 50;
+    }
+
+    private boolean gettingCloser() {
+        return _signalHistory.diff() > 0;
+    }
+
+    private boolean gettingFarther() {
+        return _signalHistory.diff() < 0;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        _x = sensorEvent.values[0];
+        long curTime = System.currentTimeMillis();
+
+        long diffTime = curTime - _lastUpdate;
+
+        _y1 = _y;
+        _z1 = _z;
+
         _y = sensorEvent.values[1];
         _z = sensorEvent.values[2];
+
+        _lastUpdate = curTime;
+
+        float speed = (_y + _z - _y1 - _z1) / diffTime * 10000;
+
+        if (Math.abs(speed) > SHAKE_THRESHOLD || Math.abs(_speed) > SHAKE_THRESHOLD) {
+            Log.v("speed", String.valueOf(speed));
+            _speed = speed;
+        }
     }
 
     @Override

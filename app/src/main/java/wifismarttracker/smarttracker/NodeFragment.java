@@ -27,9 +27,11 @@ public class NodeFragment extends Fragment {
 
         TextView name = (TextView) view.findViewById(R.id.nodeName);
         TextView distance = (TextView) view.findViewById(R.id.nodeDistance);
+        TextView angle = (TextView) view.findViewById(R.id.nodeAngle);
 
         name.setText(this.getArguments().getString("name"));
         distance.setText(String.valueOf(this.getArguments().getFloat("distance")));
+        angle.setText(String.valueOf(this.getArguments().getInt("angle")));
 
         return view;
     }

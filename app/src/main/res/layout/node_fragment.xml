@@ -15,4 +15,8 @@
         android:layout_height="match_parent"
         android:id="@+id/nodeDistance"
         />
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:id="@+id/nodeAngle"/>
 </LinearLayout>

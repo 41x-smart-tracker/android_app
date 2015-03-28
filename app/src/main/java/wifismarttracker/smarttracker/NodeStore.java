@@ -15,10 +15,17 @@ public class NodeStore {
     private WifiManager _wifiManager;
     private SensorManager _sensorManager;
 
+    private ArrayList<Node> _nodes;
+
     public NodeStore(WifiManager wifiManager, SensorManager sensorManager)
     {
         _wifiManager = wifiManager;
         _sensorManager = sensorManager;
+
+        _nodes = new ArrayList<Node>();
+
+        _nodes.add(new Node("1234", "guest", "Cisco01048", _wifiManager, _sensorManager));
+        _nodes.add(new Node("2468", "roam", "eduroam", _wifiManager, _sensorManager));
     }
 
     public void saveNode(Node toSave)
@@ -43,12 +50,7 @@ public class NodeStore {
         // parse lines in file
         // make array list of nodes
 
-        ArrayList<Node> seeds = new ArrayList<Node>();
-
-        seeds.add(new Node("1234", "guest", "Cisco01048", _wifiManager, _sensorManager));
-        seeds.add(new Node("2468", "roam", "eduroam", _wifiManager, _sensorManager));
-
-        return seeds;
+        return _nodes;
     }
 
     private ArrayList<String> readAllFromStorage()

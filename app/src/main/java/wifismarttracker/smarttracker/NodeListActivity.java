@@ -58,7 +58,7 @@ public class NodeListActivity extends FragmentActivity implements OnClickListene
         fragmentManager = getSupportFragmentManager();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        nodeStore = new NodeStore(wifiManager, accelerometer);
+        nodeStore = new NodeStore(wifiManager, sensorManager);
 
         wifiManager.startScan();
 
