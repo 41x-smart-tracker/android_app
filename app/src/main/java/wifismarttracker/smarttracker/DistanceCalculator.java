@@ -183,8 +183,11 @@ public class DistanceCalculator implements SensorEventListener {
         float speed = (_y + _z - _y1 - _z1) / diffTime * 10000;
 
         if (Math.abs(speed) > SHAKE_THRESHOLD || Math.abs(_speed) > SHAKE_THRESHOLD) {
+            if (Math.abs(speed) < 10)
+                _speed = 0;
+            else
+                _speed = speed;
             Log.v("speed", String.valueOf(speed));
-            _speed = speed;
         }
     }
 
