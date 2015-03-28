@@ -94,7 +94,7 @@ public class DistanceCalculator {
         return (float) distance;
     }
 
-    public int direction(Node node)
+    public int angle(Node node)
     {
         return 1;
     }

@@ -43,7 +43,7 @@ public class Node {
         return _calculator.distanceTo();
     }
 
-    public int direction() {
-        return 1;
+    public int angle() {
+        return 180;
     }
 }

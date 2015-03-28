@@ -143,7 +143,7 @@ public class NodeListActivity extends FragmentActivity implements OnClickListene
             Bundle bundle = new Bundle();
             bundle.putString("name", node.name());
             bundle.putFloat("distance", (float) node.distance());
-            bundle.putInt("direction", node.direction());
+            bundle.putInt("angle", node.angle());
 
             NodeFragment fragment = new NodeFragment();
             fragment.setArguments(bundle);
