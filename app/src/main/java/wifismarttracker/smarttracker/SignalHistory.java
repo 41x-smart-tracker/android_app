@@ -44,7 +44,36 @@ public class SignalHistory {
         return sum / index;
     }
 
+    public int diff() {
+        if (distances.size() < 2) {
+            return 0;
+        }
+
+        int a = distances.peek();
+        int b = last();
+
+        if (a > b) {
+            return 1;
+        } else if (a == b) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
     public double runningAverage() {
         return runningAverage(3);
+    }
+
+    private int last() {
+        if (distances.size() <= 1) {
+            return 0;
+        }
+
+        Iterator<Integer> iterator = distances.iterator();
+
+        iterator.next();
+
+        return iterator.next();
     }
 }

@@ -1,7 +1,11 @@
 package wifismarttracker.smarttracker;
 
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 /**
  * Created by graydensmith on 15-01-30.
@@ -17,13 +21,13 @@ public class Node {
 
     private DistanceCalculator _calculator;
 
-    public Node(String securityKey, String name, String ssid, WifiManager wifiManager, Sensor accelerometer)
+    public Node(String securityKey, String name, String ssid, WifiManager wifiManager, SensorManager sensorManager)
     {
         _securityKey = securityKey;
         _name = name;
         _ssid = ssid;
 
-        _calculator = new DistanceCalculator(wifiManager, accelerometer, this);
+        _calculator = new DistanceCalculator(wifiManager, sensorManager, this);
     }
 
     public String name()

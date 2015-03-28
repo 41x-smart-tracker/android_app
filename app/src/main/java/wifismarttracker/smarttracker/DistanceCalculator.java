@@ -1,6 +1,9 @@
 package wifismarttracker.smarttracker;
 
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
@@ -10,18 +13,27 @@ import java.util.List;
 /**
  * Created by graydensmith on 15-01-30.
  */
-public class DistanceCalculator {
+public class DistanceCalculator implements SensorEventListener {
 
     private WifiManager _wifiManager;
-    private Sensor _accelerometer;
+    private SensorManager _sensorManager;
     private Node _node;
     private SignalHistory _signalHistory;
 
-    public DistanceCalculator(WifiManager wifiManager, Sensor accelerometer, Node node) {
-        _wifiManager = wifiManager;
-        _accelerometer = accelerometer;
+    private float _x;
+    private float _y;
+    private float _z;
 
+    private int _lastAngle;
+
+    public DistanceCalculator(WifiManager wifiManager, SensorManager sensorManager, Node node) {
+        _wifiManager = wifiManager;
+        _sensorManager = sensorManager;
         _signalHistory = new SignalHistory();
+
+        _node = node;
+
+        _lastAngle = 0;
     }
 
     public float distanceTo()
@@ -94,9 +106,27 @@ public class DistanceCalculator {
         return (float) distance;
     }
 
-    public int angle(Node node)
+    public int angle()
     {
-        return 1;
+        // getting closer
+        if (_signalHistory.diff() > 0) {
+            if (_y > 0) {
+                return 0;
+            } else {
+                return 180;
+            }
+
+            if (_x > 0) {
+                return 90;
+            } else {
+                return 270;
+            }
+        // getting farther
+        } else if (_signalHistory.diff() < 0) {
+
+        }
+
+        return 0;
     }
 
     public void scan() {
@@ -116,5 +146,17 @@ public class DistanceCalculator {
         }
 
         return null;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        _x = sensorEvent.values[0];
+        _y = sensorEvent.values[1];
+        _z = sensorEvent.values[2];
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

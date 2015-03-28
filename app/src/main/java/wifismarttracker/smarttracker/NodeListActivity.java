@@ -3,6 +3,8 @@ package wifismarttracker.smarttracker;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;

@@ -1,6 +1,7 @@
 package wifismarttracker.smarttracker;
 
 import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.wifi.WifiManager;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ public class NodeStore {
     String nodeFileName = "nodes.txt";
 
     private WifiManager _wifiManager;
-    private Sensor _accelerometer;
+    private SensorManager _sensorManager;
 
-    public NodeStore(WifiManager wifiManager, Sensor accelerometer)
+    public NodeStore(WifiManager wifiManager, SensorManager sensorManager)
     {
         _wifiManager = wifiManager;
-        _accelerometer = accelerometer;
+        _sensorManager = sensorManager;
     }
 
     public void saveNode(Node toSave)
@@ -44,8 +45,8 @@ public class NodeStore {
 
         ArrayList<Node> seeds = new ArrayList<Node>();
 
-        seeds.add(new Node("1234", "guest", "Cisco01048", _wifiManager, _accelerometer));
-        seeds.add(new Node("2468", "roam", "eduroam", _wifiManager, _accelerometer));
+        seeds.add(new Node("1234", "guest", "Cisco01048", _wifiManager, _sensorManager));
+        seeds.add(new Node("2468", "roam", "eduroam", _wifiManager, _sensorManager));
 
         return seeds;
     }
