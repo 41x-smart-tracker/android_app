@@ -1,11 +1,6 @@
 package wifismarttracker.smarttracker;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Created by graydensmith on 15-03-22.
