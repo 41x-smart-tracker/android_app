@@ -1,11 +1,16 @@
 package wifismarttracker.smarttracker;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.support.v4.app.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -27,11 +32,19 @@ public class NodeFragment extends Fragment {
 
         TextView name = (TextView) view.findViewById(R.id.nodeName);
         TextView distance = (TextView) view.findViewById(R.id.nodeDistance);
-        TextView angle = (TextView) view.findViewById(R.id.nodeAngle);
+        ImageView arrow = (ImageView) view.findViewById(R.id.arrow);
 
         name.setText(this.getArguments().getString("name"));
         distance.setText(String.valueOf(this.getArguments().getFloat("distance")));
-        angle.setText(String.valueOf(this.getArguments().getInt("angle")));
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow);
+        Matrix mat = new Matrix();
+
+        mat.postRotate(this.getArguments().getInt("angle"));
+
+        Bitmap bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), mat, true);
+
+        arrow.setImageBitmap(bitmap1);
 
         return view;
     }
