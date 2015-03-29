@@ -50,4 +50,8 @@ public class Node {
     public int angle() {
         return _calculator.angle();
     }
+
+    public void refresh() {
+        _calculator.scan();
+    }
 }
